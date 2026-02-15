@@ -1,12 +1,9 @@
 import { ConvexQueryClient } from "@convex-dev/react-query";
 import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
 import { useAuth } from "@workos-inc/authkit-react";
+import { env } from "@/env";
 
-const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL;
-if (!CONVEX_URL) {
-	console.error("missing envar CONVEX_URL");
-}
-const convexQueryClient = new ConvexQueryClient(CONVEX_URL);
+const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL);
 
 export default function AppConvexProvider({
 	children,
