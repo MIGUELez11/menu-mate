@@ -1,96 +1,73 @@
 import { Link } from "@tanstack/react-router";
-
-import WorkOSHeader from "./workos-user.tsx";
-
 import { useState } from "react";
-import { CircleUserRound, Globe, Home, Menu, X } from "lucide-react";
+import {
+	BookOpen,
+	ClipboardList,
+	House,
+	Menu,
+	ShoppingBasket,
+	X,
+} from "lucide-react";
+
+import WorkOSHeader from "./workos-user";
+
+const navItems = [
+	{ to: "/", label: "Home", icon: House },
+	{ to: "/recipes", label: "Recipes", icon: BookOpen },
+	{ to: "/meal-plans", label: "Meal Plans", icon: ClipboardList },
+	{ to: "/shopping-list", label: "Shopping List", icon: ShoppingBasket },
+] as const;
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<>
-			<header className="p-4 flex items-center bg-gray-800 text-white shadow-lg">
-				<button
-					onClick={() => setIsOpen(true)}
-					className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-					aria-label="Open menu"
-				>
-					<Menu size={24} />
-				</button>
-				<h1 className="ml-4 text-xl font-semibold">
-					<Link to="/">
-						<img
-							src="/tanstack-word-logo-white.svg"
-							alt="TanStack Logo"
-							className="h-10"
-						/>
+			<header className="sticky top-0 z-40 flex items-center justify-between border-b border-zinc-800 bg-zinc-900/95 px-4 py-3 text-white backdrop-blur">
+				<div className="flex items-center gap-3">
+					<button
+						type="button"
+						onClick={() => setIsOpen((open) => !open)}
+						className="rounded-lg p-2 hover:bg-zinc-800"
+						aria-label="Toggle menu"
+					>
+						{isOpen ? <X size={20} /> : <Menu size={20} />}
+					</button>
+					<Link to="/" className="text-xl font-semibold tracking-tight">
+						Menu Mate
 					</Link>
-				</h1>
+				</div>
+				<div className="hidden md:block">
+					<WorkOSHeader />
+				</div>
 			</header>
 
 			<aside
-				className={`fixed top-0 left-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
+				className={`fixed inset-y-0 left-0 z-30 w-72 border-r border-zinc-800 bg-zinc-900 p-4 text-white transition-transform duration-200 ${
 					isOpen ? "translate-x-0" : "-translate-x-full"
 				}`}
 			>
-				<div className="flex items-center justify-between p-4 border-b border-gray-700">
-					<h2 className="text-xl font-bold">Navigation</h2>
-					<button
-						onClick={() => setIsOpen(false)}
-						className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-						aria-label="Close menu"
-					>
-						<X size={24} />
-					</button>
+				<div className="mt-12 space-y-2">
+					{navItems.map((item) => {
+						const Icon = item.icon;
+						return (
+							<Link
+								key={item.to}
+								to={item.to}
+								onClick={() => setIsOpen(false)}
+								className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-zinc-800"
+								activeProps={{
+									className:
+										"flex items-center gap-3 rounded-lg bg-cyan-700 px-3 py-2",
+								}}
+							>
+								<Icon size={18} />
+								<span>{item.label}</span>
+							</Link>
+						);
+					})}
 				</div>
-
-				<nav className="flex-1 p-4 overflow-y-auto">
-					<Link
-						to="/"
-						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-						activeProps={{
-							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
-						}}
-					>
-						<Home size={20} />
-						<span className="font-medium">Home</span>
-					</Link>
-
-					{/* Demo Links Start */}
-
-					<Link
-						to="/demo/workos"
-						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-						activeProps={{
-							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
-						}}
-					>
-						<CircleUserRound size={20} />
-						<span className="font-medium">WorkOS</span>
-					</Link>
-
-					<Link
-						to="/demo/convex"
-						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-						activeProps={{
-							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
-						}}
-					>
-						<Globe size={20} />
-						<span className="font-medium">Convex</span>
-					</Link>
-
-					{/* Demo Links End */}
-				</nav>
-
-				<div className="p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2">
+				<div className="mt-6 border-t border-zinc-800 pt-4 md:hidden">
 					<WorkOSHeader />
 				</div>
 			</aside>
