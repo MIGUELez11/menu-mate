@@ -45,4 +45,20 @@ export default defineSchema({
 		quantity: v.number(),
 		unit: v.string(),
 	}).index("by_recipe", ["recipeId"]),
+	weeklyPlans: defineTable({
+		userId: v.string(),
+		weekStartDate: v.string(),
+		name: v.optional(v.string()),
+	}).index("by_user", ["userId"]),
+	weeklyPlanItems: defineTable({
+		weeklyPlanId: v.id("weeklyPlans"),
+		dishId: v.id("dishes"),
+		dayOfWeek: v.number(),
+		mealType: v.union(
+			v.literal("breakfast"),
+			v.literal("lunch"),
+			v.literal("dinner"),
+			v.literal("snack"),
+		),
+	}).index("by_plan", ["weeklyPlanId"]),
 });
