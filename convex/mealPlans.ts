@@ -60,7 +60,9 @@ export const listWeeklyPlans = query({
 			.query("weeklyPlans")
 			.withIndex("by_user", (q) => q.eq("userId", userId))
 			.collect();
-		return plans.sort((a, b) => b.weekStartDate.localeCompare(a.weekStartDate));
+		return plans.sort((a, b) =>
+			(b.weekStartDate ?? "").localeCompare(a.weekStartDate ?? ""),
+		);
 	},
 });
 
@@ -79,16 +81,31 @@ export const getWeeklyPlanWithItems = query({
 			.query("weeklyPlanItems")
 			.withIndex("by_plan", (q) => q.eq("planId", args.planId))
 			.collect();
+		const validItems = items.filter(
+			(
+				item,
+			): item is typeof item & {
+				recipeId: typeof item.recipeId & string;
+				date: string;
+			} => typeof item.date === "string" && typeof item.recipeId === "string",
+		);
 
-		const recipeIds = Array.from(new Set(items.map((item) => item.recipeId)));
+		const recipeIds = Array.from(new Set(validItems.map((item) => item.recipeId)));
 		const recipes = await Promise.all(recipeIds.map((recipeId) => ctx.db.get(recipeId)));
 		const recipeNameById = new Map(
 			recipes
 				.filter((recipe): recipe is NonNullable<typeof recipe> => recipe !== null)
+				.filter(
+					(
+						recipe,
+					): recipe is typeof recipe & {
+						name: string;
+					} => typeof recipe.name === "string",
+				)
 				.map((recipe) => [recipe._id, recipe.name]),
 		);
 
-		const sortedItems = items
+		const sortedItems = validItems
 			.sort((a, b) => {
 				if (a.date !== b.date) {
 					return a.date.localeCompare(b.date);
@@ -123,7 +140,13 @@ export const upsertWeeklyPlanItem = mutation({
 		}
 
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (
+			!recipe ||
+			recipe.userId !== userId ||
+			recipe.isActive === false ||
+			typeof recipe.name !== "string" ||
+			recipe.name.trim().length === 0
+		) {
 			throw new Error("Recipe not found");
 		}
 
@@ -183,6 +206,14 @@ export const validateWeeklyPlanConstraints = query({
 			.query("weeklyPlanItems")
 			.withIndex("by_plan", (q) => q.eq("planId", args.planId))
 			.collect();
+		const validItems = items.filter(
+			(
+				item,
+			): item is typeof item & {
+				recipeId: typeof item.recipeId & string;
+				date: string;
+			} => typeof item.date === "string" && typeof item.recipeId === "string",
+		);
 		const recipes = await ctx.db
 			.query("recipes")
 			.withIndex("by_user", (q) => q.eq("userId", userId))
@@ -192,19 +223,26 @@ export const validateWeeklyPlanConstraints = query({
 			.withIndex("by_user_recipe", (q) => q.eq("userId", userId))
 			.collect();
 
-		const recipeNameById = new Map(recipes.map((recipe) => [recipe._id, recipe.name]));
+		const recipeNameById = new Map(
+			recipes
+				.filter(
+					(recipe): recipe is typeof recipe & { name: string } =>
+						typeof recipe.name === "string" && recipe.name.trim().length > 0,
+				)
+				.map((recipe) => [recipe._id, recipe.name]),
+		);
 		const preferences: ConstraintPreference[] = prefRows.map((row) => ({
 			recipeId: row.recipeId,
 			name: recipeNameById.get(row.recipeId) ?? "Unknown recipe",
-			likeScore: row.likeScore,
+			likeScore: row.likeScore ?? 3,
 			minPerWeek: row.minPerWeek,
 			targetPerWeek: row.targetPerWeek,
 			maxPerWeek: row.maxPerWeek,
-			allowConsecutiveDays: row.allowConsecutiveDays,
+			allowConsecutiveDays: row.allowConsecutiveDays ?? true,
 			minGapDays: row.minGapDays,
 		}));
 
-		const planItems: PlanItemInput[] = items.map((item) => ({
+		const planItems: PlanItemInput[] = validItems.map((item) => ({
 			recipeId: item.recipeId,
 			date: item.date,
 			mealType: item.mealType,
