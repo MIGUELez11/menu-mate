@@ -9,6 +9,12 @@ const mealType = v.union(
 
 const planStatus = v.union(v.literal("draft"), v.literal("final"));
 
+const inventoryLocation = v.union(
+	v.literal("pantry"),
+	v.literal("fridge"),
+	v.literal("freezer"),
+);
+
 export default defineSchema({
 	products: defineTable({
 		title: v.string(),
@@ -78,4 +84,13 @@ export default defineSchema({
 		.index("by_plan", ["planId"])
 		.index("by_plan_date_meal", ["planId", "date", "mealType"])
 		.index("by_recipe", ["recipeId"]),
+	pantryItems: defineTable({
+		userId: v.string(),
+		ingredientId: v.id("ingredients"),
+		quantity: v.number(),
+		unit: v.string(),
+		location: inventoryLocation,
+	})
+		.index("by_user", ["userId"])
+		.index("by_user_ingredient_unit", ["userId", "ingredientId", "unit"]),
 });

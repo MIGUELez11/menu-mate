@@ -12,7 +12,9 @@ import type * as lib_auth from "../lib/auth.js";
 import type * as lib_planner from "../lib/planner.js";
 import type * as lib_shopping from "../lib/shopping.js";
 import type * as mealPlans from "../mealPlans.js";
+import type * as pantry from "../pantry.js";
 import type * as recipes from "../recipes.js";
+import type * as shoppingLists from "../shoppingLists.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -26,7 +28,9 @@ declare const fullApi: ApiFromModules<{
   "lib/planner": typeof lib_planner;
   "lib/shopping": typeof lib_shopping;
   mealPlans: typeof mealPlans;
+  pantry: typeof pantry;
   recipes: typeof recipes;
+  shoppingLists: typeof shoppingLists;
   todos: typeof todos;
 }>;
 
