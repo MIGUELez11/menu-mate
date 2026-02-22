@@ -8,6 +8,10 @@
  * @module
  */
 
+import type * as lib_auth from "../lib/auth.js";
+import type * as lib_planner from "../lib/planner.js";
+import type * as lib_shopping from "../lib/shopping.js";
+import type * as recipes from "../recipes.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -17,6 +21,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "lib/auth": typeof lib_auth;
+  "lib/planner": typeof lib_planner;
+  "lib/shopping": typeof lib_shopping;
+  recipes: typeof recipes;
   todos: typeof todos;
 }>;
 
