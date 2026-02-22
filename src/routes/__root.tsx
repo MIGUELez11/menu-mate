@@ -5,7 +5,6 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import Header from "../components/Header";
 
 import WorkOSProvider from "../integrations/workos/provider";
-
 import ConvexProvider from "../integrations/convex/provider";
 
 import appCss from "../styles.css?url";
@@ -21,7 +20,7 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: "Menu Mate",
 			},
 		],
 		links: [

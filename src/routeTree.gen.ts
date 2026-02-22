@@ -9,10 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShoppingListRouteImport } from './routes/shopping-list'
+import { Route as RecipesRouteImport } from './routes/recipes'
+import { Route as MealPlansRouteImport } from './routes/meal-plans'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
 
+const ShoppingListRoute = ShoppingListRouteImport.update({
+  id: '/shopping-list',
+  path: '/shopping-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesRoute = RecipesRouteImport.update({
+  id: '/recipes',
+  path: '/recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealPlansRoute = MealPlansRouteImport.update({
+  id: '/meal-plans',
+  path: '/meal-plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +49,88 @@ const DemoConvexRoute = DemoConvexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/meal-plans': typeof MealPlansRoute
+  '/recipes': typeof RecipesRoute
+  '/shopping-list': typeof ShoppingListRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/meal-plans': typeof MealPlansRoute
+  '/recipes': typeof RecipesRoute
+  '/shopping-list': typeof ShoppingListRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/meal-plans': typeof MealPlansRoute
+  '/recipes': typeof RecipesRoute
+  '/shopping-list': typeof ShoppingListRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/convex' | '/demo/workos'
+  fullPaths:
+    | '/'
+    | '/meal-plans'
+    | '/recipes'
+    | '/shopping-list'
+    | '/demo/convex'
+    | '/demo/workos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/convex' | '/demo/workos'
-  id: '__root__' | '/' | '/demo/convex' | '/demo/workos'
+  to:
+    | '/'
+    | '/meal-plans'
+    | '/recipes'
+    | '/shopping-list'
+    | '/demo/convex'
+    | '/demo/workos'
+  id:
+    | '__root__'
+    | '/'
+    | '/meal-plans'
+    | '/recipes'
+    | '/shopping-list'
+    | '/demo/convex'
+    | '/demo/workos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MealPlansRoute: typeof MealPlansRoute
+  RecipesRoute: typeof RecipesRoute
+  ShoppingListRoute: typeof ShoppingListRoute
   DemoConvexRoute: typeof DemoConvexRoute
   DemoWorkosRoute: typeof DemoWorkosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shopping-list': {
+      id: '/shopping-list'
+      path: '/shopping-list'
+      fullPath: '/shopping-list'
+      preLoaderRoute: typeof ShoppingListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes': {
+      id: '/recipes'
+      path: '/recipes'
+      fullPath: '/recipes'
+      preLoaderRoute: typeof RecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meal-plans': {
+      id: '/meal-plans'
+      path: '/meal-plans'
+      fullPath: '/meal-plans'
+      preLoaderRoute: typeof MealPlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +157,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MealPlansRoute: MealPlansRoute,
+  RecipesRoute: RecipesRoute,
+  ShoppingListRoute: ShoppingListRoute,
   DemoConvexRoute: DemoConvexRoute,
   DemoWorkosRoute: DemoWorkosRoute,
 }
