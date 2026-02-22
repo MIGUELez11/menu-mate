@@ -13,6 +13,7 @@ import { Route as IngredientsRouteImport } from './routes/ingredients'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
 import { Route as DishesIndexRouteImport } from './routes/dishes/index'
+import { Route as ShoppingListsListIdRouteImport } from './routes/shopping-lists/$listId'
 import { Route as MealPlansPlanIdRouteImport } from './routes/meal-plans/$planId'
 import { Route as DishesDishIdRouteImport } from './routes/dishes/$dishId'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
@@ -36,6 +37,11 @@ const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
 const DishesIndexRoute = DishesIndexRouteImport.update({
   id: '/dishes/',
   path: '/dishes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoppingListsListIdRoute = ShoppingListsListIdRouteImport.update({
+  id: '/shopping-lists/$listId',
+  path: '/shopping-lists/$listId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealPlansPlanIdRoute = MealPlansPlanIdRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
   '/meal-plans/$planId': typeof MealPlansPlanIdRoute
+  '/shopping-lists/$listId': typeof ShoppingListsListIdRoute
   '/dishes/': typeof DishesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
   '/meal-plans/$planId': typeof MealPlansPlanIdRoute
+  '/shopping-lists/$listId': typeof ShoppingListsListIdRoute
   '/dishes': typeof DishesIndexRoute
   '/meal-plans': typeof MealPlansIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
   '/meal-plans/$planId': typeof MealPlansPlanIdRoute
+  '/shopping-lists/$listId': typeof ShoppingListsListIdRoute
   '/dishes/': typeof DishesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/demo/workos'
     | '/dishes/$dishId'
     | '/meal-plans/$planId'
+    | '/shopping-lists/$listId'
     | '/dishes/'
     | '/meal-plans/'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/demo/workos'
     | '/dishes/$dishId'
     | '/meal-plans/$planId'
+    | '/shopping-lists/$listId'
     | '/dishes'
     | '/meal-plans'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/demo/workos'
     | '/dishes/$dishId'
     | '/meal-plans/$planId'
+    | '/shopping-lists/$listId'
     | '/dishes/'
     | '/meal-plans/'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   DemoWorkosRoute: typeof DemoWorkosRoute
   DishesDishIdRoute: typeof DishesDishIdRoute
   MealPlansPlanIdRoute: typeof MealPlansPlanIdRoute
+  ShoppingListsListIdRoute: typeof ShoppingListsListIdRoute
   DishesIndexRoute: typeof DishesIndexRoute
   MealPlansIndexRoute: typeof MealPlansIndexRoute
 }
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/dishes'
       fullPath: '/dishes/'
       preLoaderRoute: typeof DishesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shopping-lists/$listId': {
+      id: '/shopping-lists/$listId'
+      path: '/shopping-lists/$listId'
+      fullPath: '/shopping-lists/$listId'
+      preLoaderRoute: typeof ShoppingListsListIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meal-plans/$planId': {
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoWorkosRoute: DemoWorkosRoute,
   DishesDishIdRoute: DishesDishIdRoute,
   MealPlansPlanIdRoute: MealPlansPlanIdRoute,
+  ShoppingListsListIdRoute: ShoppingListsListIdRoute,
   DishesIndexRoute: DishesIndexRoute,
   MealPlansIndexRoute: MealPlansIndexRoute,
 }
