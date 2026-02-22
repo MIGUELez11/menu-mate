@@ -21,7 +21,12 @@ export const listRecipes = query({
 			.query("recipes")
 			.withIndex("by_user", (q) => q.eq("userId", userId))
 			.collect();
-		const active = recipes.filter((recipe) => recipe.isActive);
+		const active = recipes.filter(
+			(recipe): recipe is typeof recipe & { name: string } =>
+				recipe.isActive !== false &&
+				typeof recipe.name === "string" &&
+				recipe.name.trim().length > 0,
+		);
 
 		const preferences = await Promise.all(
 			active.map((recipe) =>
@@ -48,7 +53,13 @@ export const getRecipe = query({
 	handler: async (ctx, args) => {
 		const userId = await requireUserId(ctx);
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (
+			!recipe ||
+			recipe.userId !== userId ||
+			recipe.isActive === false ||
+			typeof recipe.name !== "string" ||
+			recipe.name.trim().length === 0
+		) {
 			throw new Error("Recipe not found");
 		}
 
@@ -75,6 +86,7 @@ export const getRecipe = query({
 			ingredients: recipeIngredients
 				.map((entry, index) => ({
 					...entry,
+					optional: entry.optional ?? false,
 					ingredientName: ingredients[index]?.name ?? "Unknown",
 				}))
 				.sort((a, b) => a.ingredientName.localeCompare(b.ingredientName)),
@@ -111,7 +123,7 @@ export const updateRecipe = mutation({
 	handler: async (ctx, args) => {
 		const userId = await requireUserId(ctx);
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (!recipe || recipe.userId !== userId || recipe.isActive === false) {
 			throw new Error("Recipe not found");
 		}
 
@@ -134,7 +146,7 @@ export const deleteRecipe = mutation({
 	handler: async (ctx, args) => {
 		const userId = await requireUserId(ctx);
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (!recipe || recipe.userId !== userId || recipe.isActive === false) {
 			throw new Error("Recipe not found");
 		}
 		await ctx.db.patch(args.recipeId, { isActive: false });
@@ -156,7 +168,7 @@ export const upsertRecipeIngredients = mutation({
 	handler: async (ctx, args) => {
 		const userId = await requireUserId(ctx);
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (!recipe || recipe.userId !== userId || recipe.isActive === false) {
 			throw new Error("Recipe not found");
 		}
 
@@ -189,6 +201,7 @@ export const upsertRecipeIngredients = mutation({
 					name,
 					normalizedName,
 					defaultUnit: entry.unit.trim() || "unit",
+					unit: entry.unit.trim() || "unit",
 				});
 				ingredient = await ctx.db.get(ingredientId);
 			}
@@ -202,7 +215,7 @@ export const upsertRecipeIngredients = mutation({
 				recipeId: args.recipeId,
 				ingredientId: ingredient._id,
 				quantity: entry.quantity,
-				unit: entry.unit.trim() || ingredient.defaultUnit,
+				unit: entry.unit.trim() || ingredient.defaultUnit || ingredient.unit || "unit",
 				optional: entry.optional,
 			});
 		}
@@ -223,7 +236,7 @@ export const upsertRecipePreferences = mutation({
 	handler: async (ctx, args) => {
 		const userId = await requireUserId(ctx);
 		const recipe = await ctx.db.get(args.recipeId);
-		if (!recipe || recipe.userId !== userId || !recipe.isActive) {
+		if (!recipe || recipe.userId !== userId || recipe.isActive === false) {
 			throw new Error("Recipe not found");
 		}
 
