@@ -18,7 +18,11 @@ export const getShoppingListForPlan = query({
 			.query("weeklyPlanItems")
 			.withIndex("by_plan", (q) => q.eq("planId", args.planId))
 			.collect();
-		const recipeIds = Array.from(new Set(planItems.map((item) => item.recipeId)));
+		const validPlanItems = planItems.filter(
+			(item): item is typeof item & { recipeId: NonNullable<typeof item.recipeId> } =>
+				item.recipeId !== undefined,
+		);
+		const recipeIds = Array.from(new Set(validPlanItems.map((item) => item.recipeId)));
 		const recipeIngredients = (
 			await Promise.all(
 				recipeIds.map((recipeId) =>
@@ -40,7 +44,7 @@ export const getShoppingListForPlan = query({
 		);
 
 		const planRecipeCount: Record<string, number> = {};
-		for (const item of planItems) {
+		for (const item of validPlanItems) {
 			planRecipeCount[item.recipeId] = (planRecipeCount[item.recipeId] ?? 0) + 1;
 		}
 
