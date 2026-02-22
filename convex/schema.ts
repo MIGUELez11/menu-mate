@@ -61,4 +61,17 @@ export default defineSchema({
 			v.literal("snack"),
 		),
 	}).index("by_plan", ["weeklyPlanId"]),
+	shoppingLists: defineTable({
+		weeklyPlanId: v.id("weeklyPlans"),
+		userId: v.string(),
+	}).index("by_plan", ["weeklyPlanId"]),
+	shoppingListItems: defineTable({
+		shoppingListId: v.id("shoppingLists"),
+		ingredientId: v.id("ingredients"),
+		ingredientName: v.string(),
+		category: v.optional(v.string()),
+		quantity: v.number(),
+		unit: v.string(),
+		purchased: v.boolean(),
+	}).index("by_list", ["shoppingListId"]),
 });
