@@ -9,13 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IngredientsRouteImport } from './routes/ingredients'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DishesIndexRouteImport } from './routes/dishes/index'
+import { Route as DishesDishIdRouteImport } from './routes/dishes/$dishId'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
 
+const IngredientsRoute = IngredientsRouteImport.update({
+  id: '/ingredients',
+  path: '/ingredients',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DishesIndexRoute = DishesIndexRouteImport.update({
+  id: '/dishes/',
+  path: '/dishes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DishesDishIdRoute = DishesDishIdRouteImport.update({
+  id: '/dishes/$dishId',
+  path: '/dishes/$dishId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoWorkosRoute = DemoWorkosRouteImport.update({
@@ -31,41 +49,93 @@ const DemoConvexRoute = DemoConvexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ingredients': typeof IngredientsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/dishes/$dishId': typeof DishesDishIdRoute
+  '/dishes/': typeof DishesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ingredients': typeof IngredientsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/dishes/$dishId': typeof DishesDishIdRoute
+  '/dishes': typeof DishesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ingredients': typeof IngredientsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/dishes/$dishId': typeof DishesDishIdRoute
+  '/dishes/': typeof DishesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/convex' | '/demo/workos'
+  fullPaths:
+    | '/'
+    | '/ingredients'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/dishes/$dishId'
+    | '/dishes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/convex' | '/demo/workos'
-  id: '__root__' | '/' | '/demo/convex' | '/demo/workos'
+  to:
+    | '/'
+    | '/ingredients'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/dishes/$dishId'
+    | '/dishes'
+  id:
+    | '__root__'
+    | '/'
+    | '/ingredients'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/dishes/$dishId'
+    | '/dishes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IngredientsRoute: typeof IngredientsRoute
   DemoConvexRoute: typeof DemoConvexRoute
   DemoWorkosRoute: typeof DemoWorkosRoute
+  DishesDishIdRoute: typeof DishesDishIdRoute
+  DishesIndexRoute: typeof DishesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ingredients': {
+      id: '/ingredients'
+      path: '/ingredients'
+      fullPath: '/ingredients'
+      preLoaderRoute: typeof IngredientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dishes/': {
+      id: '/dishes/'
+      path: '/dishes'
+      fullPath: '/dishes/'
+      preLoaderRoute: typeof DishesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dishes/$dishId': {
+      id: '/dishes/$dishId'
+      path: '/dishes/$dishId'
+      fullPath: '/dishes/$dishId'
+      preLoaderRoute: typeof DishesDishIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/workos': {
@@ -87,8 +157,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IngredientsRoute: IngredientsRoute,
   DemoConvexRoute: DemoConvexRoute,
   DemoWorkosRoute: DemoWorkosRoute,
+  DishesDishIdRoute: DishesDishIdRoute,
+  DishesIndexRoute: DishesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
