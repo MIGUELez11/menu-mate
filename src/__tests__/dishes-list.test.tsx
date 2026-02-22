@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
+import { api } from "../../convex/_generated/api";
 
 const mockCreate = vi.fn().mockResolvedValue("dish1");
-const mockRemove = vi.fn().mockResolvedValue(null);
 
 vi.mock("convex/react", () => ({
 	Authenticated: ({ children }: { children: React.ReactNode }) => (
@@ -58,7 +58,7 @@ describe("DishesPage UI", () => {
 
 	it("renders dish list", () => {
 		function TestDishList() {
-			const dishes = useQuery(() => [] as never) as typeof mockDishes;
+			const dishes = useQuery(api.dishes.list) as typeof mockDishes;
 			return (
 				<div>
 					{dishes?.map((d) => (
@@ -79,7 +79,7 @@ describe("DishesPage UI", () => {
 	it("shows empty state when no dishes", () => {
 		vi.mocked(useQuery).mockReturnValue([] as never);
 		function TestEmpty() {
-			const dishes = useQuery(() => [] as never) as typeof mockDishes;
+			const dishes = useQuery(api.dishes.list) as typeof mockDishes;
 			return dishes.length === 0 ? (
 				<div data-testid="empty">No dishes yet</div>
 			) : (

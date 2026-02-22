@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
-
-const mockMutation = vi.fn().mockResolvedValue(null);
+import { api } from "../../convex/_generated/api";
 
 vi.mock("convex/react", () => ({
 	Authenticated: ({ children }: { children: React.ReactNode }) => (
@@ -54,7 +53,7 @@ describe("MealPlanDetail UI", () => {
 
 	it("renders plan name", () => {
 		function TestPlan() {
-			const plan = useQuery(() => null as never) as typeof mockPlan | null;
+			const plan = useQuery(api.weeklyPlans.getWithItems, { id: "plan1" as never }) as typeof mockPlan | null;
 			if (!plan) return null;
 			return <h1>{plan.name}</h1>;
 		}

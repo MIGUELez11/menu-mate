@@ -4,7 +4,6 @@ import { ArrowLeft, ListChecks, Plus, RefreshCw, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -59,7 +58,7 @@ function MealPlanDetailContent() {
 
 	// Group items by cell
 	const itemsByCell = useMemo(() => {
-		const map: Record<string, typeof plan.items> = {};
+		const map: Record<string, NonNullable<typeof plan>["items"]> = {};
 		if (!plan) return map;
 		for (const item of plan.items) {
 			const key = cellKey(item.dayOfWeek, item.mealType);
@@ -94,6 +93,7 @@ function MealPlanDetailContent() {
 	};
 
 	const handleGenerate = async () => {
+		if (!plan) return;
 		setGenerating(true);
 		try {
 			await generateList({ weeklyPlanId: plan._id });

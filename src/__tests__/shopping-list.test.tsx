@@ -1,9 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
-
-const mockToggle = vi.fn().mockResolvedValue(null);
-const mockDelete = vi.fn().mockResolvedValue(null);
+import { api } from "../../convex/_generated/api";
 
 vi.mock("convex/react", () => ({
 	Authenticated: ({ children }: { children: React.ReactNode }) => (
@@ -64,7 +62,7 @@ describe("ShoppingList UI", () => {
 
 	it("renders shopping list items", () => {
 		function TestList() {
-			const list = useQuery(() => null as never) as typeof mockList | null;
+			const list = useQuery(api.shoppingLists.getWithItems, { listId: "list1" as never }) as typeof mockList | null;
 			if (!list) return null;
 			return (
 				<div>
@@ -89,7 +87,7 @@ describe("ShoppingList UI", () => {
 		expect(progress).toBe(50);
 
 		function TestProgress() {
-			const list = useQuery(() => null as never) as typeof mockList | null;
+			const list = useQuery(api.shoppingLists.getWithItems, { listId: "list1" as never }) as typeof mockList | null;
 			if (!list) return null;
 			const t = list.items.length;
 			const p = list.items.filter((i) => i.purchased).length;
@@ -114,7 +112,7 @@ describe("ShoppingList UI", () => {
 
 	it("applies strikethrough to purchased items", () => {
 		function TestStrike() {
-			const list = useQuery(() => null as never) as typeof mockList | null;
+			const list = useQuery(api.shoppingLists.getWithItems, { listId: "list1" as never }) as typeof mockList | null;
 			if (!list) return null;
 			return (
 				<div>

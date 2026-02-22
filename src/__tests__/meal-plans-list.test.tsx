@@ -1,9 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
-
-const mockCreate = vi.fn().mockResolvedValue("plan1");
-const mockRemove = vi.fn().mockResolvedValue(null);
+import { api } from "../../convex/_generated/api";
 
 vi.mock("convex/react", () => ({
 	Authenticated: ({ children }: { children: React.ReactNode }) => (
@@ -51,7 +49,7 @@ describe("MealPlansPage UI", () => {
 
 	it("renders plan cards", () => {
 		function TestPlanList() {
-			const plans = useQuery(() => [] as never) as typeof mockPlans;
+			const plans = useQuery(api.weeklyPlans.list) as typeof mockPlans;
 			return (
 				<div>
 					{plans?.map((p) => (
@@ -72,7 +70,7 @@ describe("MealPlansPage UI", () => {
 	it("shows empty state when no plans", () => {
 		vi.mocked(useQuery).mockReturnValue([] as never);
 		function TestEmpty() {
-			const plans = useQuery(() => [] as never) as typeof mockPlans;
+			const plans = useQuery(api.weeklyPlans.list) as typeof mockPlans;
 			return plans.length === 0 ? (
 				<div data-testid="empty">No meal plans yet</div>
 			) : (

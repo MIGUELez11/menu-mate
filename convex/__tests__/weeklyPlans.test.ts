@@ -6,7 +6,7 @@ import schema from "../schema";
 const modules = import.meta.glob("../**/*.*s", { eager: false });
 
 describe("weeklyPlans", () => {
-	async function createDish(asUser: ReturnType<typeof convexTest>["withIdentity"]) {
+	async function createDish(asUser: ReturnType<ReturnType<typeof convexTest>["withIdentity"]>) {
 		return asUser.mutation(api.dishes.create, {
 			name: "Pasta",
 			mealType: "dinner" as const,

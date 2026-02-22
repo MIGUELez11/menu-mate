@@ -8,7 +8,12 @@
  * @module
  */
 
+import type * as dishes from "../dishes.js";
+import type * as ingredients from "../ingredients.js";
+import type * as recipes from "../recipes.js";
+import type * as shoppingLists from "../shoppingLists.js";
 import type * as todos from "../todos.js";
+import type * as weeklyPlans from "../weeklyPlans.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +22,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  dishes: typeof dishes;
+  ingredients: typeof ingredients;
+  recipes: typeof recipes;
+  shoppingLists: typeof shoppingLists;
   todos: typeof todos;
+  weeklyPlans: typeof weeklyPlans;
 }>;
 
 /**

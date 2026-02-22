@@ -1,11 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import React, { useState } from "react";
+import { api } from "../../convex/_generated/api";
 
 const mockCreate = vi.fn().mockResolvedValue("ing3");
-const mockRemove = vi.fn().mockResolvedValue(null);
 
-// Mock Convex hooks
 vi.mock("convex/react", () => ({
 	Authenticated: ({ children }: { children: React.ReactNode }) => (
 		<>{children}</>
@@ -15,13 +14,11 @@ vi.mock("convex/react", () => ({
 	useMutation: vi.fn(),
 }));
 
-// Mock TanStack Router
 vi.mock("@tanstack/react-router", () => ({
 	createFileRoute: () => () => ({ component: null }),
 	useLocation: () => ({ pathname: "/ingredients" }),
 }));
 
-// Mock WorkOS auth
 vi.mock("@workos-inc/authkit-react", () => ({
 	useAuth: () => ({ user: { email: "test@example.com" }, isLoading: false }),
 }));
@@ -54,7 +51,7 @@ describe("IngredientsPage UI", () => {
 
 	it("renders ingredient list", () => {
 		function TestList() {
-			const ingredients = useQuery(() => [] as never) as typeof mockIngredients;
+			const ingredients = useQuery(api.ingredients.list) as typeof mockIngredients;
 			return (
 				<div>
 					{ingredients?.map((i) => (
@@ -74,7 +71,7 @@ describe("IngredientsPage UI", () => {
 
 	it("calls create mutation on form submit", async () => {
 		function TestForm() {
-			const create = useMutation(() => [] as never);
+			const create = useMutation(api.ingredients.create);
 			const [name, setName] = useState("");
 			const [unit, setUnit] = useState("");
 			return (
@@ -91,7 +88,7 @@ describe("IngredientsPage UI", () => {
 					/>
 					<button
 						data-testid="add-btn"
-						onClick={() => create({ name, unit } as never)}
+						onClick={() => create({ name, unit })}
 					>
 						Add
 					</button>

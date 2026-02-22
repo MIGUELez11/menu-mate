@@ -7,7 +7,7 @@ const modules = import.meta.glob("../**/*.*s", { eager: false });
 
 describe("shoppingLists", () => {
 	async function setupPlanWithRecipe(
-		asUser: ReturnType<typeof convexTest>["withIdentity"],
+		asUser: ReturnType<ReturnType<typeof convexTest>["withIdentity"]>,
 	) {
 		const planId = await asUser.mutation(api.weeklyPlans.create, {
 			weekStartDate: "2026-02-17",
@@ -65,7 +65,7 @@ describe("shoppingLists", () => {
 	it("generate aggregates ingredients correctly", async () => {
 		const t = convexTest(schema, modules);
 		const asUser = t.withIdentity({ subject: "user1" });
-		const { planId, ingredientId } = await setupPlanWithRecipe(asUser);
+		const { planId } = await setupPlanWithRecipe(asUser);
 
 		const listId = await asUser.mutation(api.shoppingLists.generate, {
 			weeklyPlanId: planId,
