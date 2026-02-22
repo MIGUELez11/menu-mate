@@ -12,7 +12,7 @@ export default defineConfig({
 			{
 				test: {
 					name: "convex",
-					include: ["convex/__tests__/**/*.test.ts"],
+					include: ["tests/convex/**/*.test.ts"],
 					environment: "node",
 					server: {
 						deps: {
