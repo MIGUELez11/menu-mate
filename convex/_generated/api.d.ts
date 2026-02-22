@@ -11,6 +11,7 @@
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_planner from "../lib/planner.js";
 import type * as lib_shopping from "../lib/shopping.js";
+import type * as mealPlans from "../mealPlans.js";
 import type * as recipes from "../recipes.js";
 import type * as todos from "../todos.js";
 
@@ -24,6 +25,7 @@ declare const fullApi: ApiFromModules<{
   "lib/auth": typeof lib_auth;
   "lib/planner": typeof lib_planner;
   "lib/shopping": typeof lib_shopping;
+  mealPlans: typeof mealPlans;
   recipes: typeof recipes;
   todos: typeof todos;
 }>;

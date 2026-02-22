@@ -1,6 +1,14 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+const mealType = v.union(
+	v.literal("breakfast"),
+	v.literal("lunch"),
+	v.literal("dinner"),
+);
+
+const planStatus = v.union(v.literal("draft"), v.literal("final"));
+
 export default defineSchema({
 	products: defineTable({
 		title: v.string(),
@@ -55,4 +63,25 @@ export default defineSchema({
 	})
 		.index("by_recipe", ["recipeId"])
 		.index("by_user_recipe", ["userId", "recipeId"]),
+	weeklyPlans: defineTable({
+		userId: v.optional(v.string()),
+		weekStartDate: v.optional(v.string()),
+		status: v.optional(planStatus),
+		startDate: v.optional(v.string()),
+	})
+		.index("by_user_week", ["userId", "weekStartDate"])
+		.index("by_user", ["userId"]),
+	weeklyPlanItems: defineTable({
+		userId: v.optional(v.string()),
+		planId: v.optional(v.id("weeklyPlans")),
+		date: v.optional(v.string()),
+		mealType,
+		recipeId: v.optional(v.id("recipes")),
+		weeklyPlanId: v.optional(v.id("weeklyPlans")),
+		dishId: v.optional(v.string()),
+		dayOfWeek: v.optional(v.number()),
+	})
+		.index("by_plan", ["planId"])
+		.index("by_plan_date_meal", ["planId", "date", "mealType"])
+		.index("by_recipe", ["recipeId"]),
 });
