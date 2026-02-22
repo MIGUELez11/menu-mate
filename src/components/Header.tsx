@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import WorkOSHeader from "./workos-user.tsx";
 
 import { useState } from "react";
-import { CircleUserRound, Globe, Home, Menu, X } from "lucide-react";
+import { CalendarDays, CircleUserRound, Globe, Home, ListOrdered, Menu, UtensilsCrossed, X } from "lucide-react";
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -59,7 +59,48 @@ export default function Header() {
 						<span className="font-medium">Home</span>
 					</Link>
 
-					{/* Demo Links Start */}
+					{/* App Links */}
+
+				<Link
+					to="/meal-plans"
+					onClick={() => setIsOpen(false)}
+					className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+					activeProps={{
+						className:
+							"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+					}}
+				>
+					<CalendarDays size={20} />
+					<span className="font-medium">Meal Plans</span>
+				</Link>
+
+				<Link
+					to="/dishes"
+					onClick={() => setIsOpen(false)}
+					className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+					activeProps={{
+						className:
+							"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+					}}
+				>
+					<UtensilsCrossed size={20} />
+					<span className="font-medium">Dishes</span>
+				</Link>
+
+				<Link
+					to="/ingredients"
+					onClick={() => setIsOpen(false)}
+					className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+					activeProps={{
+						className:
+							"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+					}}
+				>
+					<ListOrdered size={20} />
+					<span className="font-medium">Ingredients</span>
+				</Link>
+
+				{/* Demo Links Start */}
 
 					<Link
 						to="/demo/workos"
