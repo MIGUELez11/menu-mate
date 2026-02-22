@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Authenticated, Unauthenticated, useMutation, useQuery } from "convex/react";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft, ListChecks, Plus, RefreshCw, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
@@ -44,8 +44,13 @@ function MealPlanDetailContent() {
 		id: planId as Id<"weeklyPlans">,
 	});
 	const dishes = useQuery(api.dishes.list);
+	const shoppingList = useQuery(api.shoppingLists.getByPlan, {
+		weeklyPlanId: planId as Id<"weeklyPlans">,
+	});
 	const addItem = useMutation(api.weeklyPlans.addItem);
 	const removeItem = useMutation(api.weeklyPlans.removeItem);
+	const generateList = useMutation(api.shoppingLists.generate);
+	const [generating, setGenerating] = useState(false);
 
 	// Per-cell add state: key = `${dayOfWeek}-${mealType}`
 	const [selectedDish, setSelectedDish] = useState<Record<string, string>>({});
@@ -88,17 +93,50 @@ function MealPlanDetailContent() {
 		await removeItem({ itemId });
 	};
 
+	const handleGenerate = async () => {
+		setGenerating(true);
+		try {
+			await generateList({ weeklyPlanId: plan._id });
+		} finally {
+			setGenerating(false);
+		}
+	};
+
 	return (
 		<div className="p-4 max-w-7xl mx-auto">
-			<div className="flex items-center gap-3 mb-6">
+			<div className="flex items-center gap-3 mb-6 flex-wrap">
 				<Link to="/meal-plans" className="text-gray-400 hover:text-white">
 					<ArrowLeft size={20} />
 				</Link>
-				<div>
+				<div className="flex-1">
 					<h1 className="text-2xl font-bold text-white">
 						{plan.name ?? `Week of ${plan.weekStartDate}`}
 					</h1>
 					<p className="text-gray-400 text-sm">Starting {plan.weekStartDate}</p>
+				</div>
+				<div className="flex gap-2">
+					<Button
+						onClick={handleGenerate}
+						disabled={generating}
+						className="bg-cyan-600 hover:bg-cyan-700 text-white"
+					>
+						<RefreshCw size={16} className={generating ? "animate-spin" : ""} />
+						{generating ? "Generating..." : "Generate Shopping List"}
+					</Button>
+					{shoppingList && (
+						<Link
+							to="/shopping-lists/$listId"
+							params={{ listId: shoppingList._id }}
+						>
+							<Button
+								variant="outline"
+								className="border-cyan-700 text-cyan-400 hover:bg-gray-700"
+							>
+								<ListChecks size={16} />
+								View List
+							</Button>
+						</Link>
+					)}
 				</div>
 			</div>
 
