@@ -1,6 +1,14 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+const mealType = v.union(
+	v.literal("breakfast"),
+	v.literal("lunch"),
+	v.literal("dinner"),
+);
+
+const planStatus = v.union(v.literal("draft"), v.literal("final"));
+
 export default defineSchema({
 	products: defineTable({
 		title: v.string(),
@@ -53,4 +61,21 @@ export default defineSchema({
 	})
 		.index("by_recipe", ["recipeId"])
 		.index("by_user_recipe", ["userId", "recipeId"]),
+	weeklyPlans: defineTable({
+		userId: v.string(),
+		weekStartDate: v.string(),
+		status: planStatus,
+	})
+		.index("by_user_week", ["userId", "weekStartDate"])
+		.index("by_user", ["userId"]),
+	weeklyPlanItems: defineTable({
+		userId: v.string(),
+		planId: v.id("weeklyPlans"),
+		date: v.string(),
+		mealType,
+		recipeId: v.id("recipes"),
+	})
+		.index("by_plan", ["planId"])
+		.index("by_plan_date_meal", ["planId", "date", "mealType"])
+		.index("by_recipe", ["recipeId"]),
 });
