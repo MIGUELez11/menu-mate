@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IngredientsRouteImport } from './routes/ingredients'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
 import { Route as DishesIndexRouteImport } from './routes/dishes/index'
+import { Route as MealPlansPlanIdRouteImport } from './routes/meal-plans/$planId'
 import { Route as DishesDishIdRouteImport } from './routes/dishes/$dishId'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
@@ -26,9 +28,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
+  id: '/meal-plans/',
+  path: '/meal-plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DishesIndexRoute = DishesIndexRouteImport.update({
   id: '/dishes/',
   path: '/dishes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealPlansPlanIdRoute = MealPlansPlanIdRouteImport.update({
+  id: '/meal-plans/$planId',
+  path: '/meal-plans/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DishesDishIdRoute = DishesDishIdRouteImport.update({
@@ -53,7 +65,9 @@ export interface FileRoutesByFullPath {
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
+  '/meal-plans/$planId': typeof MealPlansPlanIdRoute
   '/dishes/': typeof DishesIndexRoute
+  '/meal-plans/': typeof MealPlansIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +75,9 @@ export interface FileRoutesByTo {
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
+  '/meal-plans/$planId': typeof MealPlansPlanIdRoute
   '/dishes': typeof DishesIndexRoute
+  '/meal-plans': typeof MealPlansIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,7 +86,9 @@ export interface FileRoutesById {
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
   '/dishes/$dishId': typeof DishesDishIdRoute
+  '/meal-plans/$planId': typeof MealPlansPlanIdRoute
   '/dishes/': typeof DishesIndexRoute
+  '/meal-plans/': typeof MealPlansIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,7 +98,9 @@ export interface FileRouteTypes {
     | '/demo/convex'
     | '/demo/workos'
     | '/dishes/$dishId'
+    | '/meal-plans/$planId'
     | '/dishes/'
+    | '/meal-plans/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -88,7 +108,9 @@ export interface FileRouteTypes {
     | '/demo/convex'
     | '/demo/workos'
     | '/dishes/$dishId'
+    | '/meal-plans/$planId'
     | '/dishes'
+    | '/meal-plans'
   id:
     | '__root__'
     | '/'
@@ -96,7 +118,9 @@ export interface FileRouteTypes {
     | '/demo/convex'
     | '/demo/workos'
     | '/dishes/$dishId'
+    | '/meal-plans/$planId'
     | '/dishes/'
+    | '/meal-plans/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,7 +129,9 @@ export interface RootRouteChildren {
   DemoConvexRoute: typeof DemoConvexRoute
   DemoWorkosRoute: typeof DemoWorkosRoute
   DishesDishIdRoute: typeof DishesDishIdRoute
+  MealPlansPlanIdRoute: typeof MealPlansPlanIdRoute
   DishesIndexRoute: typeof DishesIndexRoute
+  MealPlansIndexRoute: typeof MealPlansIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -124,11 +150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meal-plans/': {
+      id: '/meal-plans/'
+      path: '/meal-plans'
+      fullPath: '/meal-plans/'
+      preLoaderRoute: typeof MealPlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dishes/': {
       id: '/dishes/'
       path: '/dishes'
       fullPath: '/dishes/'
       preLoaderRoute: typeof DishesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meal-plans/$planId': {
+      id: '/meal-plans/$planId'
+      path: '/meal-plans/$planId'
+      fullPath: '/meal-plans/$planId'
+      preLoaderRoute: typeof MealPlansPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dishes/$dishId': {
@@ -161,7 +201,9 @@ const rootRouteChildren: RootRouteChildren = {
   DemoConvexRoute: DemoConvexRoute,
   DemoWorkosRoute: DemoWorkosRoute,
   DishesDishIdRoute: DishesDishIdRoute,
+  MealPlansPlanIdRoute: MealPlansPlanIdRoute,
   DishesIndexRoute: DishesIndexRoute,
+  MealPlansIndexRoute: MealPlansIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
