@@ -9,6 +9,7 @@
  */
 
 import type * as ingredients from "../ingredients.js";
+import type * as recipes from "../recipes.js";
 import type * as seedUnits from "../seedUnits.js";
 import type * as todos from "../todos.js";
 import type * as units from "../units.js";
@@ -21,6 +22,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   ingredients: typeof ingredients;
+  recipes: typeof recipes;
   seedUnits: typeof seedUnits;
   todos: typeof todos;
   units: typeof units;

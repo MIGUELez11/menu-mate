@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import {
+	ChefHat,
 	CircleUserRound,
 	Globe,
 	Home,
@@ -92,6 +93,19 @@ export default function Header() {
 					>
 						<Sprout size={20} />
 						<span className="font-medium">Ingredients</span>
+					</Link>
+
+					<Link
+						to="/recipes"
+						onClick={() => setIsOpen(false)}
+						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+						activeProps={{
+							className:
+								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+						}}
+					>
+						<ChefHat size={20} />
+						<span className="font-medium">Recipes</span>
 					</Link>
 
 					{/* Demo Links Start */}

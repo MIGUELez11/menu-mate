@@ -22,4 +22,32 @@ export default defineSchema({
 		allowedUnitIds: v.array(v.id("units")),
 		primaryUnitId: v.id("units"),
 	}).index("by_name", ["name"]),
+	recipes: defineTable({
+		name: v.string(),
+		description: v.optional(v.string()),
+		authorId: v.string(),
+		portions: v.number(),
+		cookTimeMinutes: v.number(),
+		difficulty: v.union(
+			v.literal("easy"),
+			v.literal("medium"),
+			v.literal("hard"),
+		),
+		tags: v.array(v.string()),
+		coverImageId: v.optional(v.id("_storage")),
+		videoUrl: v.optional(v.string()),
+		tips: v.array(v.string()),
+	}).index("by_author", ["authorId"]),
+	recipeIngredients: defineTable({
+		recipeId: v.id("recipes"),
+		ingredientId: v.id("ingredients"),
+		quantity: v.number(),
+		unitOverride: v.optional(v.string()),
+	}).index("by_recipe", ["recipeId"]),
+	recipeSteps: defineTable({
+		recipeId: v.id("recipes"),
+		order: v.number(),
+		text: v.string(),
+		imageId: v.optional(v.id("_storage")),
+	}).index("by_recipe", ["recipeId"]),
 });
