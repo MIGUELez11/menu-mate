@@ -53,6 +53,7 @@ export type IngredientDraft = {
 	ingredientName: string;
 	quantity: number;
 	unitOverride: string;
+	optional: boolean;
 };
 
 export type RecipeFormValues = {
@@ -107,16 +108,26 @@ function IngredientPicker({
 	const [search, setSearch] = useState("");
 	const [quantity, setQuantity] = useState("1");
 	const [unitOverride, setUnitOverride] = useState("");
+	const [optional, setOptional] = useState(false);
 	const [selected, setSelected] = useState<{
 		id: Id<"ingredients">;
 		name: string;
+		allowedUnitIds: Id<"units">[];
+		primaryUnitId: Id<"units">;
 	} | null>(null);
 	const [open, setOpen] = useState(false);
 
 	const results = useQuery(api.ingredients.list, search ? { search } : {});
+	const allUnits = useQuery(api.units.list, {});
 	const searchId = useId();
 	const quantityId = useId();
 	const unitId = useId();
+	const optionalId = useId();
+
+	const availableUnits =
+		selected && allUnits
+			? allUnits.filter((u) => selected.allowedUnitIds.includes(u._id))
+			: [];
 
 	const handleAdd = () => {
 		if (!selected || !quantity || Number(quantity) <= 0) return;
@@ -125,11 +136,13 @@ function IngredientPicker({
 			ingredientName: selected.name,
 			quantity: Number(quantity),
 			unitOverride,
+			optional,
 		});
 		setSelected(null);
 		setSearch("");
 		setQuantity("1");
 		setUnitOverride("");
+		setOptional(false);
 		setOpen(false);
 	};
 
@@ -150,6 +163,7 @@ function IngredientPicker({
 						onChange={(e) => {
 							setSearch(e.target.value);
 							setSelected(null);
+							setUnitOverride("");
 							setOpen(true);
 						}}
 						onFocus={() => setOpen(true)}
@@ -163,8 +177,19 @@ function IngredientPicker({
 									<button
 										type="button"
 										onClick={() => {
-											setSelected({ id: ing._id, name: ing.name });
+											setSelected({
+												id: ing._id,
+												name: ing.name,
+												allowedUnitIds: ing.allowedUnitIds,
+												primaryUnitId: ing.primaryUnitId,
+											});
 											setSearch(ing.name);
+											if (allUnits) {
+												const primary = allUnits.find(
+													(u) => u._id === ing.primaryUnitId,
+												);
+												if (primary) setUnitOverride(primary.abbreviation);
+											}
 											setOpen(false);
 										}}
 										className="w-full text-left px-3 py-2 hover:bg-slate-700 text-sm"
@@ -201,17 +226,46 @@ function IngredientPicker({
 						htmlFor={unitId}
 						className="block text-xs font-medium text-slate-300 mb-1"
 					>
-						Unit override
+						Unit
 					</label>
-					<input
-						id={unitId}
-						type="text"
-						value={unitOverride}
-						onChange={(e) => setUnitOverride(e.target.value)}
-						placeholder="e.g. tbsp"
-						className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-500 text-sm"
-					/>
+					{selected && availableUnits.length > 0 ? (
+						<select
+							id={unitId}
+							value={unitOverride}
+							onChange={(e) => setUnitOverride(e.target.value)}
+							className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-500 text-sm"
+						>
+							{availableUnits.map((u) => (
+								<option key={u._id} value={u.abbreviation}>
+									{u.abbreviation} ({u.name})
+								</option>
+							))}
+						</select>
+					) : (
+						<input
+							id={unitId}
+							type="text"
+							value={unitOverride}
+							onChange={(e) => setUnitOverride(e.target.value)}
+							placeholder="e.g. tbsp"
+							disabled={!selected}
+							className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-500 text-sm disabled:opacity-50"
+						/>
+					)}
 				</div>
+			</div>
+
+			<div className="flex items-center gap-2">
+				<input
+					id={optionalId}
+					type="checkbox"
+					checked={optional}
+					onChange={(e) => setOptional(e.target.checked)}
+					className="rounded border-slate-600 bg-slate-800"
+				/>
+				<label htmlFor={optionalId} className="text-xs text-slate-300">
+					Optional ingredient
+				</label>
 			</div>
 
 			<button
@@ -333,8 +387,26 @@ function SortableStepItem({
 							className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
 						>
 							<ImageIcon size={12} />
-							{step.imageFile || step.existingImageId ? "Change image" : "Add image"}
+							{step.imageFile || step.existingImageId
+								? "Change image"
+								: "Add image"}
 						</button>
+						{(step.existingImageId || step.imageFile) && (
+							<button
+								type="button"
+								onClick={() =>
+									onChange(step.localId, {
+										existingImageId: undefined,
+										imageFile: undefined,
+										existingImageUrl: null,
+									})
+								}
+								className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+								title="Remove image"
+							>
+								<X size={12} />
+							</button>
+						)}
 						<input
 							ref={fileInputRef}
 							type="file"
@@ -842,7 +914,14 @@ export function RecipeForm({
 								key={ing.localId}
 								className="flex items-center justify-between p-3 bg-slate-800 rounded-lg text-sm"
 							>
-								<span className="font-medium">{ing.ingredientName}</span>
+								<span className="font-medium flex items-center gap-2">
+									{ing.ingredientName}
+									{ing.optional && (
+										<span className="px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded text-xs">
+											optional
+										</span>
+									)}
+								</span>
 								<div className="flex items-center gap-3">
 									<span className="text-slate-400">
 										{ing.quantity}

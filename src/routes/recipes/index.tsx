@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
-import { ChefHat, Clock, Plus, Tag, Users } from "lucide-react";
+import { ChefHat, Clock, Plus, Search, Tag, Users } from "lucide-react";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 
@@ -38,10 +38,11 @@ const DIFFICULTY_COLOR = {
 
 function RecipesList() {
 	const [tagFilter, setTagFilter] = useState("");
-	const recipes = useQuery(
-		api.recipes.list,
-		tagFilter ? { tag: tagFilter } : {},
-	);
+	const [search, setSearch] = useState("");
+	const recipes = useQuery(api.recipes.list, {
+		...(tagFilter ? { tag: tagFilter } : {}),
+		...(search ? { search } : {}),
+	});
 
 	return (
 		<div className="min-h-screen bg-slate-900 text-white p-6">
@@ -60,8 +61,16 @@ function RecipesList() {
 					</Link>
 				</div>
 
-				<div className="flex items-center gap-2 mb-4">
-					<Tag size={16} className="text-slate-400" />
+				<div className="flex flex-wrap items-center gap-2 mb-4">
+					<Search size={16} className="text-slate-400" />
+					<input
+						type="text"
+						placeholder="Search recipes..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						className="px-3 py-1.5 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-500 text-sm"
+					/>
+					<Tag size={16} className="text-slate-400 ml-2" />
 					<input
 						type="text"
 						placeholder="Filter by tag..."
@@ -69,10 +78,13 @@ function RecipesList() {
 						onChange={(e) => setTagFilter(e.target.value)}
 						className="px-3 py-1.5 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-500 text-sm"
 					/>
-					{tagFilter && (
+					{(search || tagFilter) && (
 						<button
 							type="button"
-							onClick={() => setTagFilter("")}
+							onClick={() => {
+								setSearch("");
+								setTagFilter("");
+							}}
 							className="text-slate-400 hover:text-white text-sm"
 						>
 							Clear
@@ -84,8 +96,8 @@ function RecipesList() {
 					<p className="text-slate-400">Loading...</p>
 				) : recipes.length === 0 ? (
 					<p className="text-slate-400">
-						{tagFilter
-							? `No recipes found with tag "${tagFilter}".`
+						{search || tagFilter
+							? "No recipes match your search."
 							: "No recipes yet. Be the first to add one!"}
 					</p>
 				) : (
@@ -98,10 +110,18 @@ function RecipesList() {
 								className="bg-slate-800 hover:bg-slate-700 rounded-xl overflow-hidden transition-colors group"
 							>
 								<div className="h-40 bg-slate-700 flex items-center justify-center overflow-hidden">
-									<ChefHat
-										size={48}
-										className="text-slate-500 group-hover:text-slate-400 transition-colors"
-									/>
+									{recipe.coverImageUrl ? (
+										<img
+											src={recipe.coverImageUrl}
+											alt={recipe.name}
+											className="w-full h-full object-cover"
+										/>
+									) : (
+										<ChefHat
+											size={48}
+											className="text-slate-500 group-hover:text-slate-400 transition-colors"
+										/>
+									)}
 								</div>
 
 								<div className="p-4">

@@ -15,28 +15,51 @@ const recipeFields = {
 	description: v.optional(v.string()),
 	portions: v.number(),
 	cookTimeMinutes: v.number(),
-	difficulty: v.union(v.literal("easy"), v.literal("medium"), v.literal("hard")),
+	difficulty: v.union(
+		v.literal("easy"),
+		v.literal("medium"),
+		v.literal("hard"),
+	),
 	tags: v.array(v.string()),
-	coverImageId: v.optional(v.id("_storage")),
+	coverImageId: v.optional(v.union(v.id("_storage"), v.null())),
 	videoUrl: v.optional(v.string()),
 	tips: v.array(v.string()),
 };
 
 export const create = mutation({
 	args: recipeFields,
-	handler: async (ctx, args) => {
+	handler: async (ctx, { coverImageId, ...rest }) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) throw new Error("Not authenticated");
-		return ctx.db.insert("recipes", { ...args, authorId: identity.subject });
+		return ctx.db.insert("recipes", {
+			...rest,
+			authorId: identity.subject,
+			...(coverImageId ? { coverImageId } : {}),
+		});
 	},
 });
 
 export const list = query({
-	args: { tag: v.optional(v.string()) },
-	handler: async (ctx, { tag }) => {
+	args: { tag: v.optional(v.string()), search: v.optional(v.string()) },
+	handler: async (ctx, { tag, search }) => {
 		const recipes = await ctx.db.query("recipes").collect();
-		if (tag) return recipes.filter((r) => r.tags.includes(tag));
-		return recipes;
+		let filtered = tag ? recipes.filter((r) => r.tags.includes(tag)) : recipes;
+		if (search) {
+			const lower = search.toLowerCase();
+			filtered = filtered.filter(
+				(r) =>
+					r.name.toLowerCase().includes(lower) ||
+					(r.description?.toLowerCase().includes(lower) ?? false),
+			);
+		}
+		return Promise.all(
+			filtered.map(async (r) => ({
+				...r,
+				coverImageUrl: r.coverImageId
+					? await ctx.storage.getUrl(r.coverImageId)
+					: null,
+			})),
+		);
 	},
 });
 
@@ -83,13 +106,18 @@ export const getById = query({
 
 export const update = mutation({
 	args: { id: v.id("recipes"), ...recipeFields },
-	handler: async (ctx, { id, ...fields }) => {
+	handler: async (ctx, { id, coverImageId, ...rest }) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) throw new Error("Not authenticated");
 		const recipe = await ctx.db.get(id);
 		if (!recipe || recipe.authorId !== identity.subject)
 			throw new Error("Not authorized");
-		await ctx.db.patch(id, fields);
+		// coverImageId: null = clear, id = set, undefined = no change
+		const coverPatch =
+			coverImageId !== undefined
+				? { coverImageId: coverImageId === null ? undefined : coverImageId }
+				: {};
+		await ctx.db.patch(id, { ...rest, ...coverPatch });
 	},
 });
 
@@ -122,6 +150,7 @@ export const addIngredient = mutation({
 		ingredientId: v.id("ingredients"),
 		quantity: v.number(),
 		unitOverride: v.optional(v.string()),
+		optional: v.optional(v.boolean()),
 	},
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
@@ -135,6 +164,7 @@ export const updateIngredient = mutation({
 		id: v.id("recipeIngredients"),
 		quantity: v.number(),
 		unitOverride: v.optional(v.string()),
+		optional: v.optional(v.boolean()),
 	},
 	handler: async (ctx, { id, ...fields }) => {
 		await ctx.db.patch(id, fields);
@@ -152,17 +182,21 @@ export const addStep = mutation({
 	args: {
 		recipeId: v.id("recipes"),
 		text: v.string(),
-		imageId: v.optional(v.id("_storage")),
+		imageId: v.optional(v.union(v.id("_storage"), v.null())),
 	},
-	handler: async (ctx, args) => {
+	handler: async (ctx, { imageId, ...rest }) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) throw new Error("Not authenticated");
 		const existing = await ctx.db
 			.query("recipeSteps")
-			.withIndex("by_recipe", (q) => q.eq("recipeId", args.recipeId))
+			.withIndex("by_recipe", (q) => q.eq("recipeId", rest.recipeId))
 			.collect();
 		const order = existing.length + 1;
-		return ctx.db.insert("recipeSteps", { ...args, order });
+		return ctx.db.insert("recipeSteps", {
+			...rest,
+			order,
+			...(imageId ? { imageId } : {}),
+		});
 	},
 });
 
@@ -170,10 +204,15 @@ export const updateStep = mutation({
 	args: {
 		id: v.id("recipeSteps"),
 		text: v.string(),
-		imageId: v.optional(v.id("_storage")),
+		imageId: v.optional(v.union(v.id("_storage"), v.null())),
 	},
-	handler: async (ctx, { id, ...fields }) => {
-		await ctx.db.patch(id, fields);
+	handler: async (ctx, { id, imageId, text }) => {
+		// imageId: null = clear, id = set, undefined = no change
+		const imagePatch =
+			imageId !== undefined
+				? { imageId: imageId === null ? undefined : imageId }
+				: {};
+		await ctx.db.patch(id, { text, ...imagePatch });
 	},
 });
 

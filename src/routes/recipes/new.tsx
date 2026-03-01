@@ -64,6 +64,7 @@ function NewRecipeForm() {
 				ingredientId: ing.ingredientId,
 				quantity: ing.quantity,
 				unitOverride: ing.unitOverride || undefined,
+				optional: ing.optional || undefined,
 			});
 		}
 

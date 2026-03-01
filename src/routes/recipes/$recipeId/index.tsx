@@ -80,9 +80,7 @@ function RecipeDetail() {
 			await remove({ id: recipeId as Id<"recipes"> });
 			await navigate({ to: "/recipes" });
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to delete recipe.",
-			);
+			setError(err instanceof Error ? err.message : "Failed to delete recipe.");
 			setDeleting(false);
 		}
 	};
@@ -201,7 +199,14 @@ function RecipeDetail() {
 									key={ri._id}
 									className="flex items-center justify-between p-3 bg-slate-800 rounded-lg"
 								>
-									<span className="font-medium">{ri.ingredientName}</span>
+									<span className="font-medium flex items-center gap-2">
+										{ri.ingredientName}
+										{ri.optional && (
+											<span className="px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded text-xs">
+												optional
+											</span>
+										)}
+									</span>
 									<span className="text-slate-400 text-sm">
 										{ri.quantity}
 										{ri.unitOverride ? ` ${ri.unitOverride}` : ""}
@@ -223,7 +228,9 @@ function RecipeDetail() {
 										{idx + 1}
 									</span>
 									<div className="flex-1">
-										<p className="text-slate-200 leading-relaxed">{step.text}</p>
+										<p className="text-slate-200 leading-relaxed">
+											{step.text}
+										</p>
 										{step.imageUrl && (
 											<img
 												src={step.imageUrl}

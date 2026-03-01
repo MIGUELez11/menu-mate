@@ -43,6 +43,7 @@ export default defineSchema({
 		ingredientId: v.id("ingredients"),
 		quantity: v.number(),
 		unitOverride: v.optional(v.string()),
+		optional: v.optional(v.boolean()),
 	}).index("by_recipe", ["recipeId"]),
 	recipeSteps: defineTable({
 		recipeId: v.id("recipes"),

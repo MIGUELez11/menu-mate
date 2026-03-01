@@ -7,7 +7,12 @@ import {
 } from "convex/react";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { RecipeForm, type RecipeFormValues, type StepDraft, type IngredientDraft } from "../../../components/RecipeForm";
+import {
+	RecipeForm,
+	type RecipeFormValues,
+	type StepDraft,
+	type IngredientDraft,
+} from "../../../components/RecipeForm";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 
@@ -67,6 +72,7 @@ function EditRecipeForm() {
 			ingredientName: ri.ingredientName,
 			quantity: ri.quantity,
 			unitOverride: ri.unitOverride ?? "",
+			optional: ri.optional ?? false,
 		}));
 		setInitial({
 			name: recipe.name,
@@ -114,7 +120,7 @@ function EditRecipeForm() {
 			tags: values.tags,
 			tips: values.tips,
 			videoUrl: values.videoUrl || undefined,
-			coverImageId: values.existingCoverImageId,
+			coverImageId: values.existingCoverImageId ?? null,
 		});
 
 		// ── Ingredients: remove all existing, re-add ──
@@ -127,6 +133,7 @@ function EditRecipeForm() {
 				ingredientId: ing.ingredientId,
 				quantity: ing.quantity,
 				unitOverride: ing.unitOverride || undefined,
+				optional: ing.optional || undefined,
 			});
 		}
 
@@ -149,14 +156,14 @@ function EditRecipeForm() {
 				await updateStepMut({
 					id: step.id,
 					text: step.text,
-					imageId: step.existingImageId as Id<"_storage"> | undefined,
+					imageId: step.existingImageId ?? null,
 				});
 				newStepIds.push(step.id);
 			} else {
 				const newId = await addStepMut({
 					recipeId: id,
 					text: step.text,
-					imageId: step.existingImageId as Id<"_storage"> | undefined,
+					imageId: step.existingImageId ?? null,
 				});
 				newStepIds.push(newId);
 			}
