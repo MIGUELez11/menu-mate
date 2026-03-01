@@ -1,12 +1,10 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import Header from "../components/Header";
-
-import WorkOSProvider from "../integrations/workos/provider";
-
 import ConvexProvider from "../integrations/convex/provider";
+import WorkOSProvider from "../integrations/workos/provider";
 
 import appCss from "../styles.css?url";
 

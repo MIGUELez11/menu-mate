@@ -56,7 +56,9 @@ export const deleteUnit = mutation({
 			const usedInAllowed = await ctx.db
 				.query("ingredients")
 				.collect()
-				.then((all) => all.filter((i) => i.allowedUnitIds.includes(args.id)));
+				.then((all) =>
+				all.filter((i) => i.allowedUnitIds.includes(args.id)),
+			);
 			if (usedInAllowed.length > 0) {
 				throw new Error(
 					`Cannot delete unit: ${usedInAllowed.length} ingredient(s) use this unit.`,
@@ -67,7 +69,8 @@ export const deleteUnit = mutation({
 				.query("ingredients")
 				.collect()
 				.then(
-					(all) => all.filter((i) => i.allowedUnitIds.includes(args.id)).length,
+					(all) =>
+						all.filter((i) => i.allowedUnitIds.includes(args.id)).length,
 				);
 			throw new Error(
 				`Cannot delete unit: ${count} ingredient(s) use this unit.`,
