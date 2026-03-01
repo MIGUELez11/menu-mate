@@ -10,12 +10,54 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UnitsIndexRouteImport } from './routes/units/index'
+import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
+import { Route as IngredientsIndexRouteImport } from './routes/ingredients/index'
+import { Route as UnitsNewRouteImport } from './routes/units/new'
+import { Route as RecipesNewRouteImport } from './routes/recipes/new'
+import { Route as IngredientsNewRouteImport } from './routes/ingredients/new'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
+import { Route as UnitsIdIndexRouteImport } from './routes/units/$id/index'
+import { Route as RecipesRecipeIdIndexRouteImport } from './routes/recipes/$recipeId/index'
+import { Route as IngredientsIdIndexRouteImport } from './routes/ingredients/$id/index'
+import { Route as UnitsIdEditRouteImport } from './routes/units/$id/edit'
+import { Route as RecipesRecipeIdEditRouteImport } from './routes/recipes/$recipeId/edit'
+import { Route as IngredientsIdEditRouteImport } from './routes/ingredients/$id/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnitsIndexRoute = UnitsIndexRouteImport.update({
+  id: '/units/',
+  path: '/units/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesIndexRoute = RecipesIndexRouteImport.update({
+  id: '/recipes/',
+  path: '/recipes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngredientsIndexRoute = IngredientsIndexRouteImport.update({
+  id: '/ingredients/',
+  path: '/ingredients/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnitsNewRoute = UnitsNewRouteImport.update({
+  id: '/units/new',
+  path: '/units/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesNewRoute = RecipesNewRouteImport.update({
+  id: '/recipes/new',
+  path: '/recipes/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngredientsNewRoute = IngredientsNewRouteImport.update({
+  id: '/ingredients/new',
+  path: '/ingredients/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoWorkosRoute = DemoWorkosRouteImport.update({
@@ -28,35 +70,159 @@ const DemoConvexRoute = DemoConvexRouteImport.update({
   path: '/demo/convex',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnitsIdIndexRoute = UnitsIdIndexRouteImport.update({
+  id: '/units/$id/',
+  path: '/units/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesRecipeIdIndexRoute = RecipesRecipeIdIndexRouteImport.update({
+  id: '/recipes/$recipeId/',
+  path: '/recipes/$recipeId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngredientsIdIndexRoute = IngredientsIdIndexRouteImport.update({
+  id: '/ingredients/$id/',
+  path: '/ingredients/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnitsIdEditRoute = UnitsIdEditRouteImport.update({
+  id: '/units/$id/edit',
+  path: '/units/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesRecipeIdEditRoute = RecipesRecipeIdEditRouteImport.update({
+  id: '/recipes/$recipeId/edit',
+  path: '/recipes/$recipeId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngredientsIdEditRoute = IngredientsIdEditRouteImport.update({
+  id: '/ingredients/$id/edit',
+  path: '/ingredients/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/ingredients/new': typeof IngredientsNewRoute
+  '/recipes/new': typeof RecipesNewRoute
+  '/units/new': typeof UnitsNewRoute
+  '/ingredients/': typeof IngredientsIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
+  '/units/': typeof UnitsIndexRoute
+  '/ingredients/$id/edit': typeof IngredientsIdEditRoute
+  '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
+  '/units/$id/edit': typeof UnitsIdEditRoute
+  '/ingredients/$id/': typeof IngredientsIdIndexRoute
+  '/recipes/$recipeId/': typeof RecipesRecipeIdIndexRoute
+  '/units/$id/': typeof UnitsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/ingredients/new': typeof IngredientsNewRoute
+  '/recipes/new': typeof RecipesNewRoute
+  '/units/new': typeof UnitsNewRoute
+  '/ingredients': typeof IngredientsIndexRoute
+  '/recipes': typeof RecipesIndexRoute
+  '/units': typeof UnitsIndexRoute
+  '/ingredients/$id/edit': typeof IngredientsIdEditRoute
+  '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
+  '/units/$id/edit': typeof UnitsIdEditRoute
+  '/ingredients/$id': typeof IngredientsIdIndexRoute
+  '/recipes/$recipeId': typeof RecipesRecipeIdIndexRoute
+  '/units/$id': typeof UnitsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/ingredients/new': typeof IngredientsNewRoute
+  '/recipes/new': typeof RecipesNewRoute
+  '/units/new': typeof UnitsNewRoute
+  '/ingredients/': typeof IngredientsIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
+  '/units/': typeof UnitsIndexRoute
+  '/ingredients/$id/edit': typeof IngredientsIdEditRoute
+  '/recipes/$recipeId/edit': typeof RecipesRecipeIdEditRoute
+  '/units/$id/edit': typeof UnitsIdEditRoute
+  '/ingredients/$id/': typeof IngredientsIdIndexRoute
+  '/recipes/$recipeId/': typeof RecipesRecipeIdIndexRoute
+  '/units/$id/': typeof UnitsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/convex' | '/demo/workos'
+  fullPaths:
+    | '/'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/ingredients/new'
+    | '/recipes/new'
+    | '/units/new'
+    | '/ingredients/'
+    | '/recipes/'
+    | '/units/'
+    | '/ingredients/$id/edit'
+    | '/recipes/$recipeId/edit'
+    | '/units/$id/edit'
+    | '/ingredients/$id/'
+    | '/recipes/$recipeId/'
+    | '/units/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/convex' | '/demo/workos'
-  id: '__root__' | '/' | '/demo/convex' | '/demo/workos'
+  to:
+    | '/'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/ingredients/new'
+    | '/recipes/new'
+    | '/units/new'
+    | '/ingredients'
+    | '/recipes'
+    | '/units'
+    | '/ingredients/$id/edit'
+    | '/recipes/$recipeId/edit'
+    | '/units/$id/edit'
+    | '/ingredients/$id'
+    | '/recipes/$recipeId'
+    | '/units/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/demo/convex'
+    | '/demo/workos'
+    | '/ingredients/new'
+    | '/recipes/new'
+    | '/units/new'
+    | '/ingredients/'
+    | '/recipes/'
+    | '/units/'
+    | '/ingredients/$id/edit'
+    | '/recipes/$recipeId/edit'
+    | '/units/$id/edit'
+    | '/ingredients/$id/'
+    | '/recipes/$recipeId/'
+    | '/units/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoConvexRoute: typeof DemoConvexRoute
   DemoWorkosRoute: typeof DemoWorkosRoute
+  IngredientsNewRoute: typeof IngredientsNewRoute
+  RecipesNewRoute: typeof RecipesNewRoute
+  UnitsNewRoute: typeof UnitsNewRoute
+  IngredientsIndexRoute: typeof IngredientsIndexRoute
+  RecipesIndexRoute: typeof RecipesIndexRoute
+  UnitsIndexRoute: typeof UnitsIndexRoute
+  IngredientsIdEditRoute: typeof IngredientsIdEditRoute
+  RecipesRecipeIdEditRoute: typeof RecipesRecipeIdEditRoute
+  UnitsIdEditRoute: typeof UnitsIdEditRoute
+  IngredientsIdIndexRoute: typeof IngredientsIdIndexRoute
+  RecipesRecipeIdIndexRoute: typeof RecipesRecipeIdIndexRoute
+  UnitsIdIndexRoute: typeof UnitsIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,6 +232,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/units/': {
+      id: '/units/'
+      path: '/units'
+      fullPath: '/units/'
+      preLoaderRoute: typeof UnitsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes/': {
+      id: '/recipes/'
+      path: '/recipes'
+      fullPath: '/recipes/'
+      preLoaderRoute: typeof RecipesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/': {
+      id: '/ingredients/'
+      path: '/ingredients'
+      fullPath: '/ingredients/'
+      preLoaderRoute: typeof IngredientsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/units/new': {
+      id: '/units/new'
+      path: '/units/new'
+      fullPath: '/units/new'
+      preLoaderRoute: typeof UnitsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes/new': {
+      id: '/recipes/new'
+      path: '/recipes/new'
+      fullPath: '/recipes/new'
+      preLoaderRoute: typeof RecipesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/new': {
+      id: '/ingredients/new'
+      path: '/ingredients/new'
+      fullPath: '/ingredients/new'
+      preLoaderRoute: typeof IngredientsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/workos': {
@@ -82,6 +290,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoConvexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/units/$id/': {
+      id: '/units/$id/'
+      path: '/units/$id'
+      fullPath: '/units/$id/'
+      preLoaderRoute: typeof UnitsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes/$recipeId/': {
+      id: '/recipes/$recipeId/'
+      path: '/recipes/$recipeId'
+      fullPath: '/recipes/$recipeId/'
+      preLoaderRoute: typeof RecipesRecipeIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/$id/': {
+      id: '/ingredients/$id/'
+      path: '/ingredients/$id'
+      fullPath: '/ingredients/$id/'
+      preLoaderRoute: typeof IngredientsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/units/$id/edit': {
+      id: '/units/$id/edit'
+      path: '/units/$id/edit'
+      fullPath: '/units/$id/edit'
+      preLoaderRoute: typeof UnitsIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes/$recipeId/edit': {
+      id: '/recipes/$recipeId/edit'
+      path: '/recipes/$recipeId/edit'
+      fullPath: '/recipes/$recipeId/edit'
+      preLoaderRoute: typeof RecipesRecipeIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingredients/$id/edit': {
+      id: '/ingredients/$id/edit'
+      path: '/ingredients/$id/edit'
+      fullPath: '/ingredients/$id/edit'
+      preLoaderRoute: typeof IngredientsIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +339,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoConvexRoute: DemoConvexRoute,
   DemoWorkosRoute: DemoWorkosRoute,
+  IngredientsNewRoute: IngredientsNewRoute,
+  RecipesNewRoute: RecipesNewRoute,
+  UnitsNewRoute: UnitsNewRoute,
+  IngredientsIndexRoute: IngredientsIndexRoute,
+  RecipesIndexRoute: RecipesIndexRoute,
+  UnitsIndexRoute: UnitsIndexRoute,
+  IngredientsIdEditRoute: IngredientsIdEditRoute,
+  RecipesRecipeIdEditRoute: RecipesRecipeIdEditRoute,
+  UnitsIdEditRoute: UnitsIdEditRoute,
+  IngredientsIdIndexRoute: IngredientsIdIndexRoute,
+  RecipesRecipeIdIndexRoute: RecipesRecipeIdIndexRoute,
+  UnitsIdIndexRoute: UnitsIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

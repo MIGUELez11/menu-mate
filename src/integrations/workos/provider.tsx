@@ -1,5 +1,5 @@
-import { AuthKitProvider } from "@workos-inc/authkit-react";
 import { useNavigate } from "@tanstack/react-router";
+import { AuthKitProvider } from "@workos-inc/authkit-react";
 import { env } from "@/env";
 
 export default function AppWorkOSProvider({
