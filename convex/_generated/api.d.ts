@@ -8,7 +8,10 @@
  * @module
  */
 
+import type * as ingredients from "../ingredients.js";
+import type * as seedUnits from "../seedUnits.js";
 import type * as todos from "../todos.js";
+import type * as units from "../units.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  ingredients: typeof ingredients;
+  seedUnits: typeof seedUnits;
   todos: typeof todos;
+  units: typeof units;
 }>;
 
 /**
